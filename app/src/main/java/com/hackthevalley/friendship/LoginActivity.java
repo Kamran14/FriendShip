@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     };
 
     String[] myEmails = {"mail.utoronto.ca", "uwaterloo.ca", "yorku.ca", "mylaurier.ca"};
+    String myPass = "ohzxTRXRl3";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -106,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 View verify = findViewById(R.id.verify_email);
                 String[] shortMail = mEmailView.getText().toString().split("@");
                 if (Arrays.asList(myEmails).contains(shortMail[1])){
-                    createAccount(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    createAccount(mEmailView.getText().toString(), myPass.toString());
                     //sendConfrimation();
                     verify.setVisibility(View.VISIBLE);
                 }else{
@@ -123,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mVerify.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view){
-                signIn(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                signIn(mEmailView.getText().toString(), myPass.toString());
                 //Toast.makeText(LoginActivity.this, String.valueOf(mAuth.getInstance().getCurrentUser().isEmailVerified()), Toast.LENGTH_SHORT).show();
                 //checkVerification();
             }
