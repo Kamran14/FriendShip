@@ -3,6 +3,8 @@ package com.hackthevalley.friendship;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -87,10 +89,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser().isEmailVerified()){
-            Intent aboutScreen = new Intent(LoginActivity.this, MainRegisteration.class);
-            this.startActivity(aboutScreen);
-        }
+
+//        if (mAuth.getCurrentUser().isEmailVerified()){
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setTitle("You've already been signed in");
+//            builder.setMessage("Please select OK to continue onward");
+//            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id){
+//
+//                }
+//            });
+//        }
 
 
 
@@ -142,9 +151,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    public void changeScreen(){
-        startActivity(new Intent(LoginActivity.this, MainRegisteration.class));
-    }
 
     private void createAccount(String email, String password){
         Log.d(TAG, "createAccount:" + email);
@@ -163,6 +169,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
+
                     Toast.makeText(LoginActivity.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
                     updateUI(null);
@@ -215,6 +222,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             Boolean isVerified = user.isEmailVerified();
                             Toast.makeText(LoginActivity.this, String.valueOf(isVerified), Toast.LENGTH_SHORT).show();
                             updateUI(user);
+                            Intent newScreen = new Intent(LoginActivity.this, MainRegisteration.class);
+                            startActivity(newScreen);
                         }else{
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();

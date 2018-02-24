@@ -9,6 +9,7 @@
     tools:context="com.hackthevalley.friendship.MainRegisteration"
     tools:showIn="@layout/activity_main_registeration">
 
+
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="0dp"
