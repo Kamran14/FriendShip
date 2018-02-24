@@ -17,4 +17,6 @@
     </string>
     <string name="not_edu_email">This email does not belong to a verified Institute. Please try again</string>
     <string name="register_button">Register</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main_registeration">MainRegisteration</string>
 </resources>
