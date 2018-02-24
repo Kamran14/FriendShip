@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,8 +29,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -48,12 +58,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
+    private static final String TAG = "EmailPassword";
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+
+    String[] myEmails = {"mail.utoronto.ca", "uwaterloo.ca", "yorku.ca", "mylaurier.ca"};
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+    private FirebaseAuth mAuth;
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -69,6 +83,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+        mAuth = FirebaseAuth.getInstance();
+
+
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -86,12 +103,104 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                View verify = findViewById(R.id.verify_email);
+                String[] shortMail = mEmailView.getText().toString().split("@");
+                if (Arrays.asList(myEmails).contains(shortMail[1])){
+                    createAccount(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    //sendConfrimation();
+                    verify.setVisibility(View.VISIBLE);
+                }else{
+                 mEmailView.setError(getString(R.string.not_edu_email));
+                }
+
+                //checkUser();
+
+                //attemptLogin();
             }
         });
 
+        Button mVerify = (Button) findViewById(R.id.verify_email);
+        mVerify.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view){
+                Toast.makeText(LoginActivity.this, String.valueOf(mAuth.getCurrentUser().isEmailVerified()), Toast.LENGTH_SHORT).show();
+                checkVerification();
+            }
+        });
+
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void createAccount(String email, String password){
+        Log.d(TAG, "createAccount:" + email);
+
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "createUserWithEmail:success");
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    user.sendEmailVerification();
+                    updateUI(user);
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                    updateUI(null);
+                }
+
+
+                // [END_EXCLUDE]
+            }
+        });
+        Log.d(TAG, "it works kinda");
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    private void addUser(){
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void checkUser(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null){
+            Toast.makeText(this, "IT WORKS", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "IT DOES NOT WORK", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sendConfrimation(){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        //FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        user.sendEmailVerification();
+        Log.d(TAG, "Sent verification email");
+
+    }
+
+    private void checkVerification(){
+        FirebaseUser user = mAuth.getCurrentUser();
+       if (user.isEmailVerified()){
+           Toast.makeText(this, "Congratz, you've verified your account.", Toast.LENGTH_SHORT).show();
+       }else{
+           Toast.makeText(this, "Please verify your account by accessing your school email", Toast.LENGTH_SHORT).show();
+       }
+
     }
 
     private void populateAutoComplete() {
@@ -100,6 +209,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    private void updateUI(FirebaseUser user){
+        if(user != null){
+            mEmailView.setText(user.getEmail());
+
+        }else{
+            Toast.makeText(this, "Still not a user...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean mayRequestContacts() {

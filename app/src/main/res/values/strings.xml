@@ -15,4 +15,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="not_edu_email">This email does not belong to a verified Institute. Please try again</string>
+    <string name="register_button">Register</string>
 </resources>

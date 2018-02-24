@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "40161459439",
-    "firebase_url": "https://friendship-919dc.firebaseio.com",
-    "project_id": "friendship-919dc",
-    "storage_bucket": "friendship-919dc.appspot.com"
+    "project_number": "566153557236",
+    "firebase_url": "https://friendship-b214d.firebaseio.com",
+    "project_id": "friendship-b214d",
+    "storage_bucket": "friendship-b214d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:40161459439:android:866cd7d4f353083b",
+        "mobilesdk_app_id": "1:566153557236:android:866cd7d4f353083b",
         "android_client_info": {
           "package_name": "com.hackthevalley.friendship"
         }
       },
       "oauth_client": [
         {
-          "client_id": "40161459439-ctrruqnc73ejavp5bive8djjd4opn9jk.apps.googleusercontent.com",
+          "client_id": "566153557236-r0d5ihpkvhfrg43tjditj2mciir4e6cm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hackthevalley.friendship",
+            "certificate_hash": "cf06c4eb2b4432fee273505c1d8915c849baaadb"
+          }
+        },
+        {
+          "client_id": "566153557236-e1avnmtm107qh1euicacbv6gt7kfcdqv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAvGhgUXLkqBarcJJjiXRfM45kvEcZawiQ"
+          "current_key": "AIzaSyB1BvRpLbnkGbAy_ug5mF7c6PomtNGn-gs"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566153557236-e1avnmtm107qh1euicacbv6gt7kfcdqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
