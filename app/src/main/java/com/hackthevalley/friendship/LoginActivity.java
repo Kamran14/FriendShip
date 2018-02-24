@@ -123,8 +123,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mVerify.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view){
-                Toast.makeText(LoginActivity.this, String.valueOf(mAuth.getCurrentUser().isEmailVerified()), Toast.LENGTH_SHORT).show();
-                checkVerification();
+                signIn(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                //Toast.makeText(LoginActivity.this, String.valueOf(mAuth.getInstance().getCurrentUser().isEmailVerified()), Toast.LENGTH_SHORT).show();
+                //checkVerification();
             }
         });
 
@@ -169,18 +170,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         updateUI(currentUser);
     }
 
-    private void addUser(){
-        mAuth = FirebaseAuth.getInstance();
-    }
-
-    private void checkUser(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null){
-            Toast.makeText(this, "IT WORKS", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "IT DOES NOT WORK", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void sendConfrimation(){
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -194,12 +183,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void checkVerification(){
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user = mAuth.getInstance().getCurrentUser();
        if (user.isEmailVerified()){
            Toast.makeText(this, "Congratz, you've verified your account.", Toast.LENGTH_SHORT).show();
        }else{
            Toast.makeText(this, "Please verify your account by accessing your school email", Toast.LENGTH_SHORT).show();
        }
+
+    }
+
+    private void signIn(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>(){
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task){
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Boolean isVerified = user.isEmailVerified();
+                            Toast.makeText(LoginActivity.this, String.valueOf(isVerified), Toast.LENGTH_SHORT).show();
+                            updateUI(user);
+                        }else{
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+
+                });
 
     }
 
