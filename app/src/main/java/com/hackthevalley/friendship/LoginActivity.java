@@ -3,6 +3,7 @@ package com.hackthevalley.friendship;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -58,6 +59,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
+    public static final String nextScreen = "com.hackthevalley.MainRegisteration";
     private static final String TAG = "EmailPassword";
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
@@ -85,6 +87,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
         mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser().isEmailVerified()){
+            Intent aboutScreen = new Intent(LoginActivity.this, MainRegisteration.class);
+            this.startActivity(aboutScreen);
+        }
+
 
 
 
@@ -133,6 +140,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    public void changeScreen(){
+        startActivity(new Intent(LoginActivity.this, MainRegisteration.class));
     }
 
     private void createAccount(String email, String password){
