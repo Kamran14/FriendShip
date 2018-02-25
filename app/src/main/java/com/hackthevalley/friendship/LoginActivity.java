@@ -27,6 +27,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             "foo@example.com:hello", "bar@example.com:world"
     };
 
-    String[] myEmails = {"mail.utoronto.ca", "uwaterloo.ca", "yorku.ca", "mylaurier.ca"};
+    String[] myEmails = {"mail.utoronto.ca", "uwaterloo.ca", "yorku.ca", "mylaurier.ca", "kamrant.com", "armyspy.com"};
     String myPass = "ohzxTRXRl3";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -80,6 +81,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    public int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,16 +119,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        final Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                try  {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (Exception e) {
+
+                }
                 View verify = findViewById(R.id.verify_email);
                 String[] shortMail = mEmailView.getText().toString().split("@");
                 if (Arrays.asList(myEmails).contains(shortMail[1])){
                     createAccount(mEmailView.getText().toString(), myPass.toString());
                     //sendConfrimation();
                     verify.setVisibility(View.VISIBLE);
+                    mEmailSignInButton.setVisibility(View.GONE);
                 }else{
                  mEmailView.setError(getString(R.string.not_edu_email));
                 }
@@ -140,7 +150,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mVerify.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view){
+                if (counter >= 3){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+// Add the buttons
+                    builder.setTitle("Want us to send another confirmation link?").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Toast.makeText(LoginActivity.this, "Ye clicked Ok", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+// Set other dialog properties
+
+// Create the AlertDialog
+                    AlertDialog dialog = builder.create();
+                }
                 signIn(mEmailView.getText().toString(), myPass.toString());
+                counter += 1;
+                Toast.makeText(LoginActivity.this, String.valueOf(counter), Toast.LENGTH_SHORT).show();
                 //Toast.makeText(LoginActivity.this, String.valueOf(mAuth.getInstance().getCurrentUser().isEmailVerified()), Toast.LENGTH_SHORT).show();
                 //checkVerification();
             }
@@ -165,13 +195,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Log.d(TAG, "createUserWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
                     user.sendEmailVerification();
+                    Toast.makeText(LoginActivity.this, "Please check your inbox for confirmation page.", Toast.LENGTH_SHORT).show();
                     updateUI(user);
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
 
-                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                    Toast.makeText(LoginActivity.this, "You have already registered with us.",
                             Toast.LENGTH_SHORT).show();
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    user.sendEmailVerification();
                     updateUI(null);
                 }
 
@@ -190,16 +223,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    private void sendConfrimation(){
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        //FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-
-
-        user.sendEmailVerification();
-        Log.d(TAG, "Sent verification email");
-
-    }
+//    private void sendConfrimation(){
+//        FirebaseAuth auth = FirebaseAuth.getInstance();
+//        FirebaseUser user = auth.getCurrentUser();
+//        //FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
+//
+//
+//        user.sendEmailVerification();
+//        Log.d(TAG, "Sent verification email");
+//
+//    }
 
     private void checkVerification(){
         FirebaseUser user = mAuth.getInstance().getCurrentUser();
@@ -220,13 +253,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Boolean isVerified = user.isEmailVerified();
-                            Toast.makeText(LoginActivity.this, String.valueOf(isVerified), Toast.LENGTH_SHORT).show();
+                            //♦Toast.makeText(LoginActivity.this, String.valueOf(isVerified), Toast.LENGTH_SHORT).show();
                             updateUI(user);
-                            Intent newScreen = new Intent(LoginActivity.this, MainRegisteration.class);
-                            startActivity(newScreen);
+                            if (isVerified) {
+                                Intent newScreen = new Intent(LoginActivity.this, MainRegisteration.class);
+                                startActivity(newScreen);
+                            }else{
+                                Toast.makeText(LoginActivity.this, "You must confirm the link which was sent.", Toast.LENGTH_SHORT).show();
+                            }
                         }else{
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
@@ -248,7 +285,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setText(user.getEmail());
 
         }else{
-            Toast.makeText(this, "Still not a user...", Toast.LENGTH_SHORT).show();
+
+            //Toast.makeText(this, "Still not a user...", Toast.LENGTH_SHORT).show();
         }
     }
 

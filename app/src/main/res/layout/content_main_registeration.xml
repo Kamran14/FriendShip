@@ -29,32 +29,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Name" />
+                android:hint="Name"
+                android:inputType="textAutoCorrect|textAutoComplete|textPersonName" />
 
             <EditText
                 android:id="@+id/campusField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Campus" />
+                android:hint="Campus"
+                android:inputType="textPersonName" />
 
             <EditText
                 android:id="@+id/programField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Program of Study" />
+                android:hint="Program of Study"
+                android:inputType="textPersonName" />
 
             <EditText
                 android:id="@+id/descriptionField"
                 android:layout_width="match_parent"
                 android:layout_height="99dp"
                 android:ems="10"
-                android:inputType="text|textShortMessage"
-                android:text="Tell us about yourself" />
+                android:hint="Tell us about yourself"
+                android:inputType="text|textShortMessage" />
 
             <TextView
                 android:id="@+id/textView2"

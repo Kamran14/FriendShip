@@ -29,6 +29,10 @@
         <activity
             android:name=".MainRegisteration"
             android:label="@string/title_activity_main_registeration"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".homeActivity"
+            android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
