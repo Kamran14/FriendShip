@@ -10,29 +10,29 @@
 
     <TextView
         android:id="@+id/home_interestsLabel"
-        android:layout_width="77dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="18dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="270dp"
         android:layout_marginTop="4dp"
         android:clickable="false"
         android:fontFamily="monospace"
         android:gravity="center"
         android:text="Interests"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintBottom_toTopOf="@+id/gridLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="188dp"
-        android:layout_height="146dp"
-        android:layout_marginBottom="207dp"
+        android:layout_height="179dp"
+        android:layout_marginBottom="288dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_interestsLabel">
+        app:layout_constraintStart_toStartOf="parent">
 
         <RadioButton
             android:id="@+id/interestPolitics8"
@@ -68,6 +68,67 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Olympics" />
+
     </RadioGroup>
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="0dp"
+        android:layout_height="274dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_interestsLabel">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/homePerson1_horz"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/homePerson1_image"
+                    android:layout_width="6dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_face_black_24dp" />
+
+                <LinearLayout
+                    android:id="@+id/homePerson11_align"
+                    android:layout_width="108dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/homePerson1_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Name1" />
+
+                    <TextView
+                        android:id="@+id/homePerson1_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="email" />
+
+                    <TextView
+                        android:id="@+id/homePerson1_interests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="interests" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </GridLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -253,7 +253,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Boolean isVerified = user.isEmailVerified();
-                            //♦Toast.makeText(LoginActivity.this, String.valueOf(isVerified), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(LoginActivity.this, String.valueOf(isVerified), Toast.LENGTH_SHORT).show();
                             updateUI(user);
                             if (isVerified) {
                                 Intent newScreen = new Intent(LoginActivity.this, MainRegisteration.class);

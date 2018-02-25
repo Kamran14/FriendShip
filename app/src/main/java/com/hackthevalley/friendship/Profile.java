@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,44 +14,34 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.IgnoreExtraProperties;
-import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class homeActivity extends AppCompatActivity
+public class Profile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference mDatabase;
-    private static String TAG = "placeholder";
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("users");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        TextView ProfileName = (TextView) findViewById(R.id.profileName);
+        TextView ProfileEmail = (TextView) findViewById(R.id.profileEmail);
+        TextView ProfileProgram = (TextView) findViewById(R.id.profileProgram);
+        //TextView userProgram = (TextView) findViewById(R.id.programField);
+        ProfileName.setText(user.getDisplayName());
+        ProfileEmail.setText(user.getEmail());
+        //ProfileProgram.setText(String.valueOf(userProgram.getText().toString()));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-               // checkDB();
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }
@@ -66,61 +55,7 @@ public class homeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
     }
-
-
-        @IgnoreExtraProperties
-        public class Post {
-
-            public String uid;
-            public String author;
-            public String title;
-            public String body;
-            public int starCount = 0;
-            public Map<String, Boolean> stars = new HashMap<>();
-
-            public Post() {
-                // Default constructor required for calls to DataSnapshot.getValue(Post.class)
-            }
-
-            public Post(String uid, String author, String title, String body) {
-                this.uid = uid;
-                this.author = author;
-                this.title = title;
-                this.body = body;
-            }
-
-            @Exclude
-            public Map<String, Object> toMap() {
-                HashMap<String, Object> result = new HashMap<>();
-                result.put("uid", uid);
-                result.put("author", author);
-                result.put("title", title);
-                result.put("body", body);
-                result.put("starCount", starCount);
-                result.put("stars", stars);
-
-                return result;
-            }
-
-        }
-        public void checkDB() {
-            ValueEventListener portListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Post post = dataSnapshot.getValue(Post.class);
-                    Toast.makeText(homeActivity.this, post.toString(), Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                }
-            };
-            mDatabase.addValueEventListener(portListener);
-        }
 
 //    @Override
 //    public void onBackPressed() {
@@ -135,11 +70,7 @@ public class homeActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        TextView navUser = (TextView) findViewById(R.id.nav_user_name);
-        TextView navEmail = (TextView) findViewById(R.id.nav_user_email);
-        navUser.setText(user.getDisplayName());
-        navEmail.setText(user.getEmail());
+        getMenuInflater().inflate(R.menu.profile, menu);
         return true;
     }
 
@@ -162,25 +93,17 @@ public class homeActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            Intent nextProfile = new Intent(homeActivity.this, Profile.class);
-            startActivity(nextProfile);
+
         } else if (id == R.id.nav_ships) {
+            Intent ships = new Intent(Profile.this, homeActivity.class);
+            startActivity(ships);
 
         } else if (id == R.id.nav_logout) {
 
         }
-
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
